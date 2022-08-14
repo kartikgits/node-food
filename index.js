@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 // Require restaurant routes
-const restaurantRoutes = require('./src/routes/restaurant.routes');
+const restaurantRoutes = require('./src/routes/restaurant');
 
 // Using as middleware for all requests to /restaurants
 app.use('/api/v1/restaurants', restaurantRoutes);

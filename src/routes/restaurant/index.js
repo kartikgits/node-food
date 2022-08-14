@@ -1,0 +1,9 @@
+const express = require('express');
+
+const restaurantRouter = require('./restaurant')
+
+const app = express();
+
+app.use('/', restaurantRouter);
+
+module.exports = app;
