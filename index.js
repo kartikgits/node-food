@@ -18,6 +18,12 @@ app.get('/', (req, res) => {
     res.send('NodeFood API');
 });
 
+// Require restaurant routes
+const restaurantRoutes = require('./src/routes/restaurant.routes');
+
+// Using as middleware for all requests to /restaurants
+app.use('/api/v1/restaurants', restaurantRoutes);
+
 // Listen for requests
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
