@@ -22,7 +22,7 @@ exports.create = (req, res) => {
     } else {
         Restaurant.create(newRestaurant, (err, restaurant) => {
             if (err) {
-                res.status(400).send(err);
+                return res.status(400).send(err);
             }
             res.json(restaurant);
         });
@@ -33,7 +33,7 @@ exports.create = (req, res) => {
 exports.findById = (req, res) => {
     Restaurant.findById(req.params.id, (err, restaurant) => {
         if (err) {
-            res.send(err);
+            return res.send(err);
         }
         res.json(restaurant);
     });
@@ -43,7 +43,7 @@ exports.findById = (req, res) => {
 exports.findByNameAndKeywords = (req, res) => {
     Restaurant.findByNameAndKeywords(req.params.name, req.params.keywords, (err, restaurant) => {
         if (err) {
-            res.send(err);
+            return res.send(err);
         }
         res.json(restaurant);
     }
@@ -57,7 +57,7 @@ exports.update = (req, res) => {
     } else {
         Restaurant.update(req.params.id, new Restaurant(req.body), (err, restaurant) => {
             if (err) {
-                res.status(400).send(err);
+                return res.status(400).send(err);
             }
             res.json(restaurant);
         });
@@ -68,9 +68,57 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     Restaurant.delete(req.params.id, (err, restaurant) => {
         if (err) {
-            res.send(err);
+            return res.send(err);
         }
         res.json({ message: 'Restaurant successfully deleted' });
     }
     );
+}
+
+// Add new service pincodes
+exports.addServicePincodes = (req, res) => {
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        res.status(400).send('Provide all required fields');
+    } else {
+        Restaurant.addServicePincodes(req.body, req.params.id, (err, restaurant) => {
+            if (err) {
+                return res.status(400).send(err);
+            }
+            res.json(restaurant);
+        });
+    }
+}
+
+// Find service pincodes by restaurant id
+exports.findServicePincodesById = (req, res) => {
+    Restaurant.findServicePincodesById(req.params.id, (err, restaurant) => {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(restaurant);
+    });
+}
+
+// Update service pincodes by restaurant id
+exports.updateServicePincodesById = (req, res) => {
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        res.status(400).send('Provide all required fields');
+    } else {
+        Restaurant.updateServicePincodesById(req.params.id, req.body, (err, restaurant) => {
+            if (err) {
+                return res.status(400).send(err);
+            }
+            res.json(restaurant);
+        });
+    }
+}
+
+// Delete service pincode by restaurant id
+exports.deleteServicePincodesById = (req, res) => {
+    Restaurant.deleteServicePincodesById(req.params.id, (err, restaurant) => {
+        if (err) {
+            return res.send(err);
+        }
+        res.json({ message: 'Service pincode successfully deleted' });
+    });
 }

@@ -21,4 +21,17 @@ router.put('/admin/:id', [authJwt.verifyToken], restaurantController.update);
 // Delete a restaurant with id
 router.delete('/admin/:id', [authJwt.verifyToken], restaurantController.delete);
 
+// Add new service pincodes to a restaurant with id
+router.post('/admin/:id/pincodes', [authJwt.verifyToken], restaurantController.addServicePincodes);
+
+// Find service pincodes by restaurant id
+router.get('/:id/pincodes', restaurantController.findServicePincodesById);
+
+// Update service pincodes by restaurant id
+router.put('/admin/:id/pincodes', [authJwt.verifyToken], restaurantController.updateServicePincodesById);
+
+// Delete service pincode by restaurant id
+router.delete('/admin/:id/pincodes', [authJwt.verifyToken], restaurantController.deleteServicePincodesById);
+
+
 module.exports = router;

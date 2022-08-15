@@ -173,4 +173,84 @@ Restaurant.remove = (id, result) => {
     );
 }
 
+// `service_pincode_id` int(11) NOT NULL AUTO_INCREMENT,
+// `service_pincode` varchar(10) NOT NULL,
+// `service_status` enum('active','inactive') NOT NULL,
+// `restaurant_id` int(11) NOT NULL,
+// PRIMARY KEY (`service_pincode_id`),
+// foreign key (`restaurant_id`) references `Restaurant`(`restaurant_id`) on delete cascade on update cascade
+
+// Add new service pincodes
+Restaurant.addServicePincodes = (servicePincodesAndStatuses, restaurantId, result) => {
+    let sql = 'INSERT INTO ServicePincode (service_pincode, service_status, restaurant_id) VALUES ';
+    servicePincodesAndStatuses.forEach((servicePincodeAndStatus, index) => {
+        sql += `('${servicePincodeAndStatus.pincode}', ${servicePincodeAndStatus.status}, ${restaurantId})`;
+        if (index < servicePincodesAndStatuses.length - 1) {
+            sql += ',';
+        }
+    });
+    databaseConnection.query(sql, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+
+        console.log(`Created service pincodes: ${res.insertId}`);
+        result(null, res.insertId);
+    });
+}
+
+// Find service pincodes by id
+Restaurant.findServicePincodesById = (restaurantId, result) => {
+    databaseConnection.query(`SELECT * FROM ServicePincode WHERE restaurant_id = ${restaurantId}`, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+
+        if (res.length) {
+            console.log(`Found service pincodes: ${res[0].service_pincode_id}`);
+            result(null, res);
+            return;
+        }
+
+        // Not found service pincodes with the id
+        result({ kind: 'not_found' }, null);
+    });
+}
+
+// Update service pincodes by restaurant id
+Restaurant.updateServicePincodesById = (restaurantId, servicePincodesAndStatuses, result) => {
+    databaseConnection.query(`DELETE FROM ServicePincode WHERE restaurant_id = ${restaurantId}`, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+
+        Restaurant.addServicePincodes(servicePincodesAndStatuses, restaurantId, result);
+    });
+}
+
+// Delete service pincode by restaurant id
+Restaurant.deleteServicePincodesById = (restaurantId, servicePincode, result) => {
+    databaseConnection.query(`DELETE FROM ServicePincode WHERE restaurant_id = ${restaurantId} AND service_pincode = '${servicePincode}'`, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+
+        if (res.affectedRows == 0) {
+            result({ kind: 'not_found' }, null);
+            return;
+        }
+
+        console.log(`Deleted service pincodes: ${res.affectedRows}`);
+        result(null, res);
+    });
+}
+
 module.exports = Restaurant;
