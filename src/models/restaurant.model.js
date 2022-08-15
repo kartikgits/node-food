@@ -3,6 +3,7 @@
 let databaseConnection = require('../../config/db.config.js');
 
     // `restaurant_id` int(11) NOT NULL AUTO_INCREMENT,
+    // `restaurant_login_password` varchar(255) NOT NULL,
     // `restaurant_name` varchar(255) NOT NULL,
     // `restaurant_keywords` varchar(255) NOT NULL,
     // `restaurant_address_pincode` varchar(10) NOT NULL,
@@ -23,6 +24,7 @@ let databaseConnection = require('../../config/db.config.js');
 
 let Restaurant = function(restaurant) {
     this.restaurant_name = restaurant.restaurant_name;
+    this.restaurant_login_password = restaurant.restaurant_login_password;
     this.restaurant_keywords = restaurant.restaurant_keywords;
     this.restaurant_address_pincode = restaurant.restaurant_address_pincode;
     this.restaurant_address_locality = restaurant.restaurant_address_locality;
@@ -75,6 +77,26 @@ Restaurant.findById = (restaurantId, result) => {
     );
 }
 
+// Find restaurants by email
+Restaurant.findByEmail = (restaurantEmail, result) => {
+    databaseConnection.query(`SELECT * FROM Restaurant WHERE restaurant_email = '${restaurantEmail}'`, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+
+        if (res.length) {
+            console.log(`Found restaurant: ${res[0].restaurant_id}`);
+            result(null, res[0]);
+            return;
+        }
+
+        // Not found restaurant with the email
+        result({ kind: 'not_found' }, null);
+    });
+}
+
 // Find restaurants by name and keywords
 Restaurant.findByNameAndKeywords = (restaurantName, restaurantKeywords, result) => {
     databaseConnection.query(`SELECT * FROM Restaurant WHERE restaurant_name = '${restaurantName}' AND restaurant_keywords = '${restaurantKeywords}'`, (err, res) => {
@@ -113,7 +135,7 @@ Restaurant.getAll = result => {
 
 // Update a restaurant
 Restaurant.updateById = (id, restaurant, result) => {
-    databaseConnection.query('UPDATE Restaurant SET restaurant_name = ?, restaurant_keywords = ?, restaurant_address_pincode = ?, restaurant_address_locality = ?, restaurant_address_area = ?, restaurant_address_city = ?, restaurant_address_state = ?, restaurant_phone = ?, restaurant_email = ?, restaurant_image_url = ?, restaurant_status = ?, restaurant_open_time = ?, restaurant_close_time = ? WHERE restaurant_id = ?', [restaurant.restaurant_name, restaurant.restaurant_keywords, restaurant.restaurant_address_pincode, restaurant.restaurant_address_locality, restaurant.restaurant_address_area, restaurant.restaurant_address_city, restaurant.restaurant_address_state, restaurant.restaurant_phone, restaurant.restaurant_email, restaurant.restaurant_image_url, restaurant.restaurant_status, restaurant.restaurant_open_time, restaurant.restaurant_close_time, id], (err, res) => {
+    databaseConnection.query('UPDATE Restaurant SET restaurant_name = ?, restaurant_login_password = ?, restaurant_keywords = ?, restaurant_address_pincode = ?, restaurant_address_locality = ?, restaurant_address_area = ?, restaurant_address_city = ?, restaurant_address_state = ?, restaurant_phone = ?, restaurant_email = ?, restaurant_image_url = ?, restaurant_status = ?, restaurant_open_time = ?, restaurant_close_time = ? WHERE restaurant_id = ?', [restaurant.restaurant_name, restaurant.restaurant_login_password, restaurant.restaurant_keywords, restaurant.restaurant_address_pincode, restaurant.restaurant_address_locality, restaurant.restaurant_address_area, restaurant.restaurant_address_city, restaurant.restaurant_address_state, restaurant.restaurant_phone, restaurant.restaurant_email, restaurant.restaurant_image_url, restaurant.restaurant_status, restaurant.restaurant_open_time, restaurant.restaurant_close_time, id], (err, res) => {
         if (err) {
             console.log(err);
             result(null, err);

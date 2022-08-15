@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-
-const restaurantController = require('../../controllers/restaurant.controller');
+const { authJwt } = require('../../middlewares/restaurant');
+const restaurantController = require('../../controllers/restaurant/restaurant.controller');
 
 // Retrieve all restaurants
 router.get('/', restaurantController.findAll);
 
 // Create a new restaurant
-router.post('/', restaurantController.create);
+// router.post('/', restaurantController.create);
 
 // Retrieve a single restaurant with id
 router.get('/:id', restaurantController.findById);
@@ -16,9 +16,9 @@ router.get('/:id', restaurantController.findById);
 router.get('/name/:name/keywords/:keywords', restaurantController.findByNameAndKeywords);
 
 // Update a restaurant with id
-router.put('/:id', restaurantController.update);
+router.put('/admin/:id', [authJwt.verifyToken], restaurantController.update);
 
 // Delete a restaurant with id
-router.delete('/:id', restaurantController.delete);
+router.delete('/admin/:id', [authJwt.verifyToken], restaurantController.delete);
 
 module.exports = router;

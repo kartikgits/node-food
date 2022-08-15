@@ -8,6 +8,7 @@ set FOREIGN_KEY_CHECKS = 0;
 
 create table `Restaurant` (
     `restaurant_id` int(11) NOT NULL AUTO_INCREMENT,
+    `restaurant_login_password` varchar(255) NOT NULL,
     `restaurant_name` varchar(255) NOT NULL,
     `restaurant_keywords` varchar(255) NOT NULL,
     `restaurant_address_pincode` varchar(10) NOT NULL,
@@ -16,7 +17,7 @@ create table `Restaurant` (
     `restaurant_address_city` varchar(255) NOT NULL,
     `restaurant_address_state` varchar(255) NOT NULL,
     `restaurant_phone` varchar(255) NOT NULL,
-    `restaurant_email` varchar(255) NOT NULL,
+    `restaurant_email` varchar(255) NOT NULL UNIQUE,
     `restaurant_image_url` varchar(255) NOT NULL,
     `restaurant_status` enum('active','inactive') NOT NULL,
     `created_at` datetime NOT NULL,
@@ -24,7 +25,7 @@ create table `Restaurant` (
     `restaurant_open_time` time NOT NULL,
     `restaurant_close_time` time NOT NULL,
     PRIMARY KEY (`restaurant_id`),
-    index idx_res_name (`restaurant_name`, `restaurant_keywords`)
+    index idx_res_name (`restaurant_name`, `restaurant_keywords`, `restaurant_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table `Product` (

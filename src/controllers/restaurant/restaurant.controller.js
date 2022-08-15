@@ -1,6 +1,6 @@
 'use strict';
 
-const Restaurant = require('../models/restaurant.model');
+const Restaurant = require('../../models/restaurant.model');
 
 // Find all restaurants
 exports.findAll = (req, res) => {
